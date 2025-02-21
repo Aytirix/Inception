@@ -1,35 +1,33 @@
 version: '3.8'
 
 services:
-  nginx:
-    build:
-      context: ./requirements/nginx
-      dockerfile: Dockerfile
-    container_name: nginx
-    ports:
-      - "443:443"
-    environment:
-      - DOMAIN_NAME=${DOMAIN_NAME}
-    restart: always
-    networks:
-      - inception_net
+  # nginx:
+  #   build:
+  #     context: ./requirements/nginx
+  #     dockerfile: Dockerfile
+  #   container_name: nginx
+  #   ports:
+  #     - "443:443"
+  #   environment:
+  #     - DOMAIN_NAME=${DOMAIN_NAME}
+  #   restart: always
+  #   networks:
+  #     - inception_net
   mariadb:
     build:
-      context: .
-      dockerfile: srcs/requirements/mariadb/Dockerfile
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    container_name: mariadb
+    env_file:
+      - .env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-    volumes:
-      - mariadb_data:/var/lib/mysql
     networks:
-      - srcs_inception_net
+      - inception_net
     restart: always
-
-volumes:
-  mariadb_data:
 
 networks:
   inception_net:
