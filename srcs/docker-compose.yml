@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: ./requirements/nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    ports:
+      - "443:443"
+    environment:
+      - DOMAIN_NAME=thmouty.42.fr
+    restart: always
+    networks:
+      - inception_net
+
+networks:
+  inception_net:
+    driver: bridge
