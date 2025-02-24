@@ -1,34 +1,67 @@
-version: '3.8'
+  version: '3.8'
 
-services:
-  nginx:
-    build:
-      context: ./requirements/nginx
-      dockerfile: Dockerfile
-    container_name: nginx
-    ports:
-      - "443:443"
-    environment:
-      - DOMAIN_NAME=${DOMAIN_NAME}
-    restart: always
-    networks:
-      - inception_net
-  mariadb:
-    build:
-      context: ./requirements/mariadb
-      dockerfile: Dockerfile
-    container_name: mariadb
-    env_file:
-      - .env
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-    networks:
-      - inception_net
-    restart: always
+  services:
+    nginx:
+      build:
+        context: ./requirements/nginx
+        dockerfile: Dockerfile
+      container_name: nginx
+      ports:
+        - "443:443"
+      environment:
+        - DOMAIN_NAME=${DOMAIN_NAME}
+      volumes:
+        - wordpress_data:/var/www/html
+      restart: always
+      networks:
+        - inception_net
+    mariadb:
+      build:
+        context: ./requirements/mariadb
+        dockerfile: Dockerfile
+      container_name: mariadb
+      env_file:
+        - .env
+      environment:
+        ROOT_PASSWORD: ${ROOT_PASSWORD}
+        WP_DB_ADMIN_EMAIL: ${WP_DB_ADMIN_EMAIL}
+        WP_DB_ADMIN_USER: ${WP_DB_ADMIN_USER}
+        WP_DB_ADMIN_PASSWORD: ${WP_DB_ADMIN_PASSWORD}
+        WP_DB_NAME: ${WP_DB_NAME}
+        WP_DB_USER: ${WP_DB_USER}
+        WP_DB_PASSWORD: ${WP_DB_PASSWORD}
+      volumes:
+        - mariadb_data:/var/lib/mysql
+        - ./requirements/mariadb/conf/my.cnf:/etc/my.cnf
+      networks:
+        - inception_net
+      restart: always
+    wordpress:
+      build:
+        context: ./requirements/wordpress
+        dockerfile: Dockerfile
+      container_name: wordpress
+      restart: always
+      depends_on:
+        - mariadb
+      environment:
+        WP_DB_ADMIN_EMAIL: ${WP_DB_ADMIN_EMAIL}
+        WP_DB_ADMIN_USER: ${WP_DB_ADMIN_USER}
+        WP_DB_ADMIN_PASSWORD: ${WP_DB_ADMIN_PASSWORD}
+        WP_DB_NAME: ${WP_DB_NAME}
+        WP_DB_USER: ${WP_DB_USER}
+        WP_DB_PASSWORD: ${WP_DB_PASSWORD}
+        WP_TABLE_PREFIX: ${WP_TABLE_PREFIX}
+        DOMAIN_NAME: ${DOMAIN_NAME}
+      volumes:
+        - wordpress_data:/var/www/html
+      networks:
+        - inception_net
+    
+  volumes:
+    wordpress_data:
+    mariadb_data:
 
-networks:
-  inception_net:
-    driver: bridge
+  networks:
+    inception_net:
+      driver: bridge

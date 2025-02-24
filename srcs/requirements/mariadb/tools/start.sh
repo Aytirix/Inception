@@ -5,24 +5,40 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
     mysql_install_db --user=mysql --datadir=/var/lib/mysql
 fi
 
-if [ ! -d "/var/lib/mysql/${MYSQL_DATABASE}" ]; then
-	mysqld_safe --skip-networking &
+# Vérifier si le mot de passe root est déjà défini et si la base existe
+if [ ! -f "/var/lib/mysql/.root_password_set" ] && [ ! -d "/var/lib/mysql/${WP_DB_NAME}" ]; then
+    echo "Démarrage temporaire de MariaDB..."
+    mysqld_safe --user=mysql --skip-networking --datadir=/var/lib/mysql &
 
-	until mysqladmin ping --silent; do
-		sleep 2
-	done
+    # Attendre que le serveur soit prêt
+    echo "Attente du démarrage de MariaDB..."
+    until mysqladmin ping --silent; do
+        sleep 2
+    done
 
-	# Créer la base et l'utilisateur si nécessaire
-		mysql -u root <<-EOSQL
-			ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
-			CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;
-			CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
-			GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
-			FLUSH PRIVILEGES;
-		EOSQL
+    mysql -u root <<-EOSQL
+        ALTER USER 'root'@'localhost' IDENTIFIED BY '${ROOT_PASSWORD}';
+	EOSQL
 
-	mysqladmin -u root -p"${MYSQL_ROOT_PASSWORD}" shutdown
+    mysql -u root -p"${ROOT_PASSWORD}" <<-EOSQL
+        CREATE DATABASE IF NOT EXISTS \`${WP_DB_NAME}\`;
+
+        DROP USER IF EXISTS '${WP_DB_ADMIN_USER}'@'%';
+        CREATE USER '${WP_DB_ADMIN_USER}'@'%' IDENTIFIED BY '${WP_DB_ADMIN_PASSWORD}';
+        GRANT ALL PRIVILEGES ON \`${WP_DB_NAME}\`.* TO '${WP_DB_ADMIN_USER}'@'%';
+
+		# Créer l'utilisateur WordPress
+		DROP USER IF EXISTS '${WP_DB_USER}'@'%';
+		CREATE USER '${WP_DB_USER}'@'%' IDENTIFIED BY '${WP_DB_PASSWORD}';
+		GRANT ALL PRIVILEGES ON \`${WP_DB_NAME}\`.* TO '${WP_DB_USER}'@'%';
+	EOSQL
+
+	touch /var/lib/mysql/.root_password_set
+	echo "Arrêt de MariaDB..."
+	mysqladmin shutdown --user=root --password="${ROOT_PASSWORD}"
+	sleep 2
+
 fi
 
-
-exec mysqld --user=mysql
+echo "Démarrage final de MariaDB..."
+exec mysqld --user=mysql --datadir=/var/lib/mysql
