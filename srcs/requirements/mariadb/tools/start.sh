@@ -23,14 +23,10 @@ if [ ! -f "/var/lib/mysql/.root_password_set" ] && [ ! -d "/var/lib/mysql/${WP_D
     mysql -u root -p"${ROOT_PASSWORD}" <<-EOSQL
         CREATE DATABASE IF NOT EXISTS \`${WP_DB_NAME}\`;
 
-        DROP USER IF EXISTS '${WP_DB_ADMIN_USER}'@'%';
-        CREATE USER '${WP_DB_ADMIN_USER}'@'%' IDENTIFIED BY '${WP_DB_ADMIN_PASSWORD}';
-        GRANT ALL PRIVILEGES ON \`${WP_DB_NAME}\`.* TO '${WP_DB_ADMIN_USER}'@'%';
+        DROP USER IF EXISTS '${WP_DB_USER}'@'%';
+        CREATE USER '${WP_DB_USER}'@'%' IDENTIFIED BY '${WP_DB_PASSWORD}';
+        GRANT ALL PRIVILEGES ON \`${WP_DB_NAME}\`.* TO '${WP_DB_USER}'@'%';
 
-		# Créer l'utilisateur WordPress
-		DROP USER IF EXISTS '${WP_DB_USER}'@'%';
-		CREATE USER '${WP_DB_USER}'@'%' IDENTIFIED BY '${WP_DB_PASSWORD}';
-		GRANT ALL PRIVILEGES ON \`${WP_DB_NAME}\`.* TO '${WP_DB_USER}'@'%';
 	EOSQL
 
 	touch /var/lib/mysql/.root_password_set

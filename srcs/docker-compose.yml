@@ -24,12 +24,12 @@
         - .env
       environment:
         ROOT_PASSWORD: ${ROOT_PASSWORD}
-        WP_DB_ADMIN_EMAIL: ${WP_DB_ADMIN_EMAIL}
-        WP_DB_ADMIN_USER: ${WP_DB_ADMIN_USER}
-        WP_DB_ADMIN_PASSWORD: ${WP_DB_ADMIN_PASSWORD}
-        WP_DB_NAME: ${WP_DB_NAME}
+        WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
         WP_DB_USER: ${WP_DB_USER}
         WP_DB_PASSWORD: ${WP_DB_PASSWORD}
+        WP_DB_NAME: ${WP_DB_NAME}
+        WP_ADMIN_USER: ${WP_ADMIN_USER}
+        WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
       volumes:
         - mariadb_data:/var/lib/mysql
         - ./requirements/mariadb/conf/my.cnf:/etc/my.cnf
@@ -45,14 +45,17 @@
       depends_on:
         - mariadb
       environment:
-        WP_DB_ADMIN_EMAIL: ${WP_DB_ADMIN_EMAIL}
-        WP_DB_ADMIN_USER: ${WP_DB_ADMIN_USER}
-        WP_DB_ADMIN_PASSWORD: ${WP_DB_ADMIN_PASSWORD}
+        DOMAIN_NAME: ${DOMAIN_NAME}
+        WP_TABLE_PREFIX: ${WP_TABLE_PREFIX}
         WP_DB_NAME: ${WP_DB_NAME}
         WP_DB_USER: ${WP_DB_USER}
         WP_DB_PASSWORD: ${WP_DB_PASSWORD}
-        WP_TABLE_PREFIX: ${WP_TABLE_PREFIX}
-        DOMAIN_NAME: ${DOMAIN_NAME}
+        WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+        WP_ADMIN_USER: ${WP_ADMIN_USER}
+        WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
+        WP_EDITOR_EMAIL: ${WP_EDITOR_EMAIL}
+        WP_EDITOR_USER: ${WP_EDITOR_USER}
+        WP_EDITOR_PASSWORD: ${WP_EDITOR_PASSWORD}
       volumes:
         - wordpress_data:/var/www/html
       networks:
