@@ -60,7 +60,20 @@
         - wordpress_data:/var/www/html
       networks:
         - inception_net
-    
+    ftp:
+      build: ./bonus/ftp
+      container_name: ftp_server
+      restart: always
+      environment:
+        FTP_USER: ${FTP_USER}
+        FTP_PASSWORD: ${FTP_PASSWORD}
+      ports:
+      - "21:21"
+      volumes:
+      - wordpress_data:/var/www/html
+      networks:
+        - inception_net
+
   volumes:
     wordpress_data:
     mariadb_data:
