@@ -1,36 +1,33 @@
-# Choisir une image de base légère
+# Utilisation d'une image légère
 FROM alpine:3.16
 
-# Mettre à jour et installer vsftpd
-
+# Mise à jour et installation de vsftpd et OpenSSL
 RUN apk update && apk add vsftpd openssl
 
-# /var/run/vsftpd/empty
-RUN mkdir -p /var/run/vsftpd/empty && \
-    chown root:root /var/run/vsftpd/empty && \
-    chmod 755 /var/run/vsftpd/empty
+ARG FTP_USER
+ARG FTP_PASSWORD
 
-# Créer un répertoire pour stocker les certificats
-RUN mkdir -p /etc/ssl/certs /etc/ssl/private
-RUN chmod 700 /etc/ssl/private
+# Création du log de vsftpd
+RUN touch /var/log/vsftpd.log && chmod 640 /var/log/vsftpd.log && chown root:root /var/log/vsftpd.log
 
-# Générer un certificat SSL et une clé privée
-RUN openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/vsftpd.key -out /etc/ssl/certs/vsftpd.pem -days 365 -nodes -subj "/C=US/ST=State/L=City/O=Organization/CN=localhost"
+# Création de l'utilisateur FTP avec un répertoire dédié
 
-# log de vsftpd
-RUN touch /var/log/vsftpd.log
-RUN chmod 777 /var/log/vsftpd.log
-RUN chown root:root /var/log/vsftpd.log
+RUN echo "${FTP_USER}:${FTP_PASSWORD}"
 
-# Créer un script d'initialisation pour créer l'utilisateur FTP
-COPY tools/start.sh /start.sh
-RUN chmod +x /start.sh
+# Créer un utilisateur et un répertoire pour le serveur FTP
+RUN adduser -D -s /bin/sh "${FTP_USER}" && \
+	mkdir -p /home/${FTP_USER}/ftp && \
+	echo "${FTP_USER}:${FTP_PASSWORD}" | chpasswd && \
+	chown ${FTP_USER}:${FTP_USER} /home/${FTP_USER}/ftp && \
+	chmod 550 /home/${FTP_USER} && \
+	chmod 750 /home/${FTP_USER}/ftp
 
-# Configurer vsftpd
+# Copie du fichier de configuration de vsftpd
 COPY conf/vsftpd.conf /etc/vsftpd.conf
 
-# Exposer le port FTP (21)
+# Exposition des ports FTP et passifs
 EXPOSE 21
+EXPOSE 21000
 
-# Démarrer vsftpd
-CMD ["/bin/sh", "-c", "/start.sh && vsftpd /etc/vsftpd.conf"]
+# Lancement de vsftpd
+CMD ["vsftpd", "/etc/vsftpd.conf"]

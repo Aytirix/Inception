@@ -60,17 +60,22 @@
         - wordpress_data:/var/www/html
       networks:
         - inception_net
-    ftp:
-      build: ./bonus/ftp
+    ftp_server:
+      build:
+        context: ./bonus/ftp
+        args:
+          FTP_USER: ${FTP_USER}
+          FTP_PASSWORD: ${FTP_PASSWORD}
       container_name: ftp_server
       restart: always
       environment:
         FTP_USER: ${FTP_USER}
         FTP_PASSWORD: ${FTP_PASSWORD}
       ports:
-      - "21:21"
+        - "21:21"
+        - "21000:21000"
       volumes:
-      - wordpress_data:/var/www/html
+        - wordpress_data:/var/www/html
       networks:
         - inception_net
 
