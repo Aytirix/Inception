@@ -41,4 +41,6 @@ if [ ! -d /var/www/html/portfolio ]; then
 	git clone git@github.com:Aytirix/portfolio.git /var/www/html/portfolio
 fi
 
+echo '<meta http-equiv="refresh" content="0;url=/wordpress">' > /var/www/html/index.html
+
 php-fpm81 --nodaemonize

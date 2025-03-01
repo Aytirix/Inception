@@ -59,7 +59,6 @@ COPY conf/ssh_portfolio.priv /root/.ssh/ssh_portfolio.priv
 RUN chmod 600 /root/.ssh/ssh_portfolio.priv && \
 	ssh-keyscan -H github.com >> /root/.ssh/known_hosts
 
-
 # Ajout de la clé privée au ssh-agent pour l'authentificatione
 RUN eval $(ssh-agent -s) && \
     ssh-add /root/.ssh/ssh_portfolio.priv && git clone git@github.com:Aytirix/portfolio.git /var/www/html/portfolio
