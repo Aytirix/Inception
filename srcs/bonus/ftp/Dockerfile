@@ -21,7 +21,7 @@ RUN adduser -D -s /bin/sh "${FTP_USER}" && \
 	chown ${FTP_USER}:${FTP_USER} /home/${FTP_USER}/ftp && \
 	chmod 550 /home/${FTP_USER} && \
 	chmod 750 /home/${FTP_USER}/ftp
-
+	
 # Copie du fichier de configuration de vsftpd
 COPY conf/vsftpd.conf /etc/vsftpd.conf
 
@@ -29,5 +29,9 @@ COPY conf/vsftpd.conf /etc/vsftpd.conf
 EXPOSE 21
 EXPOSE 21000
 
-# Lancement de vsftpd
-CMD ["vsftpd", "/etc/vsftpd.conf"]
+COPY tools/entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+# Lancer le script d'entrée
+ENTRYPOINT ["/entrypoint.sh"]

@@ -68,6 +68,8 @@
           FTP_PASSWORD: ${FTP_PASSWORD}
       container_name: ftp_server
       restart: always
+      depends_on:
+        - wordpress
       environment:
         FTP_USER: ${FTP_USER}
         FTP_PASSWORD: ${FTP_PASSWORD}

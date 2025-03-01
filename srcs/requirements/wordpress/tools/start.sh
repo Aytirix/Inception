@@ -30,7 +30,7 @@ if ! wp core is-installed --path=/var/www/html/wordpress --allow-root; then
 		--role=editor \/
 		--user_pass="${WP_EDITOR_PASSWORD}" \
 		--path=/var/www/html/wordpress \
-		--allow-root
+		--allow-root/
 fi
 
 # Si le dossier /var/www/html/portfolio n'existe pas, on le crée
