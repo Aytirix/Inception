@@ -7,7 +7,7 @@ up:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up -d --build
 
 down:
-	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) down --volumes --rmi all
+	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) down --volumes --remove-orphans --rmi all
 	docker volume prune -f
 
 stop:
