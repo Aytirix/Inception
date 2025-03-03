@@ -41,6 +41,13 @@ if [ ! -d /var/www/html/portfolio ]; then
 	git clone git@github.com:Aytirix/portfolio.git /var/www/html/portfolio
 fi
 
+# Téléchargement et installation d'Adminer
+if [ ! -f /var/www/html/adminer/index.php ]; then
+	mkdir -p /var/www/html/adminer && \
+	wget "https://www.adminer.org/latest.php" -O /var/www/html/adminer/index.php && \
+	chown -R www-data:www-data /var/www/html/adminer
+fi
+
 echo '<meta http-equiv="refresh" content="0;url=/wordpress">' > /var/www/html/index.html
 
 php-fpm81 --nodaemonize
