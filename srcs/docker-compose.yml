@@ -8,8 +8,6 @@
       container_name: nginx
       ports:
         - "443:443"
-      environment:
-        - DOMAIN_NAME=${DOMAIN_NAME}
       volumes:
         - wordpress_data:/var/www/html
       restart: always
@@ -45,7 +43,6 @@
       depends_on:
         - mariadb
       environment:
-        DOMAIN_NAME: ${DOMAIN_NAME}
         WP_TABLE_PREFIX: ${WP_TABLE_PREFIX}
         WP_DB_NAME: ${WP_DB_NAME}
         WP_DB_USER: ${WP_DB_USER}

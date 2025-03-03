@@ -18,7 +18,7 @@ fi
 if ! wp core is-installed --path=/var/www/html/wordpress --allow-root; then
     echo "Installation de WordPress..."
     wp core install \
-        --url="${DOMAIN_NAME}" \
+        --url="wp.thmouty.42.fr" \
         --title="Mon Site" \
         --admin_user="${WP_ADMIN_USER}" \
         --admin_password="${WP_ADMIN_PASSWORD}" \
@@ -47,7 +47,5 @@ if [ ! -f /var/www/html/adminer/index.php ]; then
 	wget "https://www.adminer.org/latest.php" -O /var/www/html/adminer/index.php && \
 	chown -R www-data:www-data /var/www/html/adminer
 fi
-
-echo '<meta http-equiv="refresh" content="0;url=/wordpress">' > /var/www/html/index.html
 
 php-fpm81 --nodaemonize
