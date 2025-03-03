@@ -9,7 +9,7 @@
       ports:
         - "443:443"
       volumes:
-        - wordpress_data:/var/www/html
+        - /home/thmouty/data/html:/var/www/html
       restart: always
       networks:
         - inception_net
@@ -29,7 +29,7 @@
         WP_ADMIN_USER: ${WP_ADMIN_USER}
         WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
       volumes:
-        - mariadb_data:/var/lib/mysql
+        - /home/thmouty/data/mysql:/var/lib/mysql
         - ./requirements/mariadb/conf/my.cnf:/etc/my.cnf
       networks:
         - inception_net
@@ -54,9 +54,21 @@
         WP_EDITOR_USER: ${WP_EDITOR_USER}
         WP_EDITOR_PASSWORD: ${WP_EDITOR_PASSWORD}
       volumes:
-        - wordpress_data:/var/www/html
+        - /home/thmouty/data/html/wordpress:/var/www/html
       networks:
         - inception_net
+
+    portfolio:
+      build:
+        context: ./bonus/portfolio
+        dockerfile: Dockerfile
+      container_name: portfolio
+      restart: always
+      volumes:
+        - /home/thmouty/data/html/portfolio:/var/www/html
+      networks:
+        - inception_net
+
     ftp_server:
       build:
         context: ./bonus/ftp
@@ -74,13 +86,9 @@
         - "21:21"
         - "21000:21000"
       volumes:
-        - wordpress_data:/var/www/html
+        - /home/thmouty/data/html/wordpress:/var/www/html
       networks:
         - inception_net
-
-  volumes:
-    wordpress_data:
-    mariadb_data:
 
   networks:
     inception_net:

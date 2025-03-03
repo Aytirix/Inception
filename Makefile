@@ -9,6 +9,7 @@ up:
 down:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) down --volumes --remove-orphans --rmi all
 	docker volume prune -f
+	sudo rm -rf /home/thmouty/data
 
 stop:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) stop

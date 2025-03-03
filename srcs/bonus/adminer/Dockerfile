@@ -22,20 +22,46 @@ RUN apk update && apk add --no-cache \
     tar \
     bash \
     curl \
+	busybox-extras \
 	mariadb-client \
+	git \
+	openssh-client \
     && rm -rf /var/cache/apk/*
 
 # Création du lien symbolique pour PHP
 RUN ln -s /usr/bin/php81 /usr/bin/php
 
 # créer dossier wordpress
-RUN mkdir -p /var/www/html
+RUN mkdir -p /var/www/html/wordpress
 
 # Téléchargement et installation de WordPress
-WORKDIR /var/www/html
+WORKDIR /var/www/html/wordpress
 
 # Création de l'utilisateur www-data
 RUN adduser -S www-data -G www-data
+
+RUN wget https://wordpress.org/latest.tar.gz \
+    && tar -xzf latest.tar.gz --strip-components=1 \
+    && rm latest.tar.gz \
+    && chown -R www-data:www-data /var/www/html/wordpress
+
+# Téléchargement du portfolio
+
+# Installation de WP-CLI
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+chmod +x wp-cli.phar && \
+mv wp-cli.phar /usr/local/bin/wp
+
+# Création du dossier SSH et copie de la clé
+RUN mkdir -p /root/.ssh && \
+	chmod 700 /root/.ssh
+COPY conf/ssh_portfolio.priv /root/.ssh/ssh_portfolio.priv
+RUN chmod 600 /root/.ssh/ssh_portfolio.priv && \
+	ssh-keyscan -H github.com >> /root/.ssh/known_hosts
+
+# Ajout de la clé privée au ssh-agent pour l'authentificatione
+RUN eval $(ssh-agent -s) && \
+    ssh-add /root/.ssh/ssh_portfolio.priv && git clone git@github.com:Aytirix/portfolio.git /var/www/html/portfolio
 
 # Copie du fichier de configuration PHP-FPM
 COPY conf/www.conf /etc/php81/php-fpm.d/www.conf

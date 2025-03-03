@@ -22,20 +22,31 @@ RUN apk update && apk add --no-cache \
     tar \
     bash \
     curl \
-	mariadb-client \
+	busybox-extras \
+	git \
+	openssh-client \
     && rm -rf /var/cache/apk/*
 
 # Création du lien symbolique pour PHP
 RUN ln -s /usr/bin/php81 /usr/bin/php
 
-# créer dossier wordpress
 RUN mkdir -p /var/www/html
 
-# Téléchargement et installation de WordPress
+# Téléchargement et installation de portfolio
 WORKDIR /var/www/html
 
 # Création de l'utilisateur www-data
 RUN adduser -S www-data -G www-data
+
+# Création du dossier SSH et copie de la clé
+RUN mkdir -p /root/.ssh && \
+	chmod 700 /root/.ssh
+COPY conf/ssh_portfolio.priv /root/.ssh/ssh_portfolio.priv
+RUN chmod 600 /root/.ssh/ssh_portfolio.priv && \
+	ssh-keyscan -H github.com >> /root/.ssh/known_hosts
+
+# Ajout de la clé privée au ssh-agent pour l'authentificatione
+RUN eval $(ssh-agent -s) && ssh-add /root/.ssh/ssh_portfolio.priv
 
 # Copie du fichier de configuration PHP-FPM
 COPY conf/www.conf /etc/php81/php-fpm.d/www.conf
@@ -45,7 +56,7 @@ COPY tools/start.sh /tmp/start.sh
 RUN chmod +x /tmp/start.sh
 
 # Exposition du port pour PHP-FPM
-EXPOSE 9000
+EXPOSE 9001
 
 # executer le script de démarrage
 ENTRYPOINT ["/tmp/start.sh"]
