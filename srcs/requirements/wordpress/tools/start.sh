@@ -18,7 +18,7 @@ fi
 if ! wp core is-installed --path=/var/www/html/wordpress --allow-root; then
     echo "Installation de WordPress..."
     wp core install \
-        --url="wp.thmouty.42.fr" \
+        --url="thmouty.42.fr" \
         --title="Mon Site" \
         --admin_user="${WP_ADMIN_USER}" \
         --admin_password="${WP_ADMIN_PASSWORD}" \
@@ -27,10 +27,9 @@ if ! wp core is-installed --path=/var/www/html/wordpress --allow-root; then
         --allow-root
 
 	wp user create "${WP_EDITOR_USER}" "${WP_EDITOR_EMAIL}" \
-		--role=editor \/
+		--role=editor \
 		--user_pass="${WP_EDITOR_PASSWORD}" \
-		--path=/var/www/html/wordpress \
-		--allow-root/
+		--path=/var/www/html/wordpress
 fi
 
 # Si le dossier /var/www/html/portfolio n'existe pas, on le crée
