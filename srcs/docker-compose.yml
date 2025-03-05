@@ -9,7 +9,8 @@
       ports:
         - "443:443"
       volumes:
-        - wordpress_data:/var/www/html
+        - wordpress_data:/var/www/html/wordpress
+        - adminer_data:/var/www/html/adminer
       restart: always
       networks:
         - inception_net
@@ -34,6 +35,8 @@
       networks:
         - inception_net
       restart: always
+
+
     wordpress:
       build:
         context: ./requirements/wordpress
@@ -54,9 +57,25 @@
         WP_EDITOR_USER: ${WP_EDITOR_USER}
         WP_EDITOR_PASSWORD: ${WP_EDITOR_PASSWORD}
       volumes:
-        - wordpress_data:/var/www/html
+        - wordpress_data:/var/www/html/wordpress
       networks:
         - inception_net
+
+
+    # adminer:
+    #   build:
+    #     context: ./bonus/adminer
+    #     dockerfile: Dockerfile
+    #   container_name: adminer
+    #   restart: always
+    #   depends_on:
+    #     - mariadb
+    #   volumes:
+    #     - adminer_data:/var/www/html/adminer
+    #   networks:
+    #     - inception_net
+
+
     ftp_server:
       build:
         context: ./bonus/ftp
@@ -78,9 +97,21 @@
       networks:
         - inception_net
 
+
   volumes:
     wordpress_data:
+      driver: local
+      driver_opts:
+        type: none
+        device: /home/theo/data/html/wordpress
+        o: bind
     mariadb_data:
+      driver: local
+      driver_opts:
+        type: none
+        device: /home/theo/data/mariadb
+        o: bind
+    adminer_data:
 
   networks:
     inception_net:

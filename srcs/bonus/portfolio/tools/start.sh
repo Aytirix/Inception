@@ -32,4 +32,19 @@ if ! wp core is-installed --path=/var/www/html/wordpress --allow-root; then
 		--path=/var/www/html/wordpress
 fi
 
+# Si le dossier /var/www/html/portfolio n'existe pas, on le crée
+if [ ! -d /var/www/html/portfolio ]; then
+	eval $(ssh-agent -s)
+	ssh-add /root/.ssh/ssh_portfolio.priv
+	rm -rf /var/www/html/portfolio
+	git clone git@github.com:Aytirix/portfolio.git /var/www/html/portfolio
+fi
+
+# Téléchargement et installation d'Adminer
+if [ ! -f /var/www/html/adminer/index.php ]; then
+	mkdir -p /var/www/html/adminer && \
+	wget "https://www.adminer.org/latest.php" -O /var/www/html/adminer/index.php && \
+	chown -R www-data:www-data /var/www/html/adminer
+fi
+
 php-fpm81 --nodaemonize

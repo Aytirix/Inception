@@ -31,33 +31,23 @@ RUN apk update && apk add --no-cache \
 RUN ln -s /usr/bin/php81 /usr/bin/php
 
 # créer dossier wordpress
-RUN mkdir -p /var/www/html/wordpress
+RUN mkdir -p /var/www/html/adminer
 
 # Téléchargement et installation de WordPress
-WORKDIR /var/www/html/wordpress
+WORKDIR /var/www/html/adminer
 
 # Création de l'utilisateur www-data
 RUN adduser -S www-data -G www-data
 
-RUN wget https://wordpress.org/latest.tar.gz \
-    && tar -xzf latest.tar.gz --strip-components=1 \
-    && rm latest.tar.gz \
-    && chown -R www-data:www-data /var/www/html/wordpress
-
-# Installation de WP-CLI
-RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
-chmod +x wp-cli.phar && \
-mv wp-cli.phar /usr/local/bin/wp
+RUN mkdir -p /var/www/html/adminer && \
+	wget "https://www.adminer.org/latest.php" -O /var/www/html/adminer/index.php && \
+	chown -R www-data:www-data /var/www/html/adminer
 
 # Copie du fichier de configuration PHP-FPM
 COPY conf/www.conf /etc/php81/php-fpm.d/www.conf
 
-# Copie du script de démarrage
-COPY tools/start.sh /tmp/start.sh
-RUN chmod +x /tmp/start.sh
-
 # Exposition du port pour PHP-FPM
 EXPOSE 9000
 
-# executer le script de démarrage
-ENTRYPOINT ["/tmp/start.sh"]
+# lance PHP-FPM
+CMD ["php-fpm81", "--nodaemonize"]
