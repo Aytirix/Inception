@@ -8,6 +8,7 @@
       container_name: nginx
       ports:
         - "443:443"
+        - "80:80"
       volumes:
         - wordpress_data:/var/www/html/wordpress
         - adminer_data:/var/www/html/adminer
@@ -62,18 +63,31 @@
         - inception_net
 
 
-    # adminer:
-    #   build:
-    #     context: ./bonus/adminer
-    #     dockerfile: Dockerfile
-    #   container_name: adminer
-    #   restart: always
-    #   depends_on:
-    #     - mariadb
-    #   volumes:
-    #     - adminer_data:/var/www/html/adminer
-    #   networks:
-    #     - inception_net
+    adminer:
+      build:
+        context: ./bonus/adminer
+        dockerfile: Dockerfile
+      container_name: adminer
+      restart: always
+      depends_on:
+        - mariadb
+      volumes:
+        - adminer_data:/var/www/html/adminer
+      networks:
+        - inception_net
+
+    portfolio:
+      build:
+        context: ./bonus/portfolio
+        dockerfile: Dockerfile
+      container_name: portfolio
+      restart: always
+      depends_on:
+        - mariadb
+      volumes:
+        - portfolio_data:/var/www/html/portfolio
+      networks:
+        - inception_net
 
 
     ftp_server:
@@ -112,6 +126,17 @@
         device: /home/theo/data/mariadb
         o: bind
     adminer_data:
+      driver: local
+      driver_opts:
+        type: none
+        device: /home/theo/data/html/adminer
+        o: bind
+    portfolio_data:
+      driver: local
+      driver_opts:
+        type: none
+        device: /home/theo/data/html/portfolio
+        o: bind
 
   networks:
     inception_net:
