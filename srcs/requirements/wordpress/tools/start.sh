@@ -18,7 +18,6 @@ fi
 if ! wp core is-installed --path=/var/www/html/wordpress --allow-root; then
     echo "Installation de WordPress..."
     wp core install \
-        --url="thmouty.42.fr" \
         --title="Mon Site" \
         --admin_user="${WP_ADMIN_USER}" \
         --admin_password="${WP_ADMIN_PASSWORD}" \
