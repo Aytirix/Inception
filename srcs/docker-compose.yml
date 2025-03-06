@@ -15,6 +15,7 @@
       restart: always
       networks:
         - inception_net
+
     mariadb:
       build:
         context: ./requirements/mariadb
@@ -36,7 +37,6 @@
       networks:
         - inception_net
       restart: always
-
 
     wordpress:
       build:
@@ -61,7 +61,6 @@
         - wordpress_data:/var/www/html/wordpress
       networks:
         - inception_net
-
 
     adminer:
       build:
@@ -89,7 +88,6 @@
       networks:
         - inception_net
 
-
     ftp_server:
       build:
         context: ./bonus/ftp
@@ -112,7 +110,6 @@
       networks:
         - inception_net
 
-
     cadvisor:
      build:
         context: ./bonus/cadvisor
@@ -124,7 +121,6 @@
      - cadvisor_data:/data
      networks:
      - inception_net
-
 
   volumes:
     wordpress_data:
