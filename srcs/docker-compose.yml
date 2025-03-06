@@ -8,7 +8,7 @@
       container_name: nginx
       ports:
         - "443:443"
-        - "80:80"
+        # - "80:80"
       volumes:
         - wordpress_data:/var/www/html/wordpress
         - adminer_data:/var/www/html/adminer
