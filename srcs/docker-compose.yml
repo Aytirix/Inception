@@ -131,31 +131,31 @@
       driver: local
       driver_opts:
         type: none
-        device: /home/theo/data/html/wordpress
+        device: /home/thmouty/data/html/wordpress
         o: bind
     mariadb_data:
       driver: local
       driver_opts:
         type: none
-        device: /home/theo/data/mariadb
+        device: /home/thmouty/data/mariadb
         o: bind
     adminer_data:
       driver: local
       driver_opts:
         type: none
-        device: /home/theo/data/html/adminer
+        device: /home/thmouty/data/html/adminer
         o: bind
     portfolio_data:
       driver: local
       driver_opts:
         type: none
-        device: /home/theo/data/html/portfolio
+        device: /home/thmouty/data/html/portfolio
         o: bind
     cadvisor_data:
         driver: local
         driver_opts:
             type: none
-            device: /home/theo/data/cadvisor
+            device: /home/thmouty/data/cadvisor
             o: bind
 
   networks:
