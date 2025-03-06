@@ -9,6 +9,7 @@ up:
 	mkdir -p /home/theo/data/html/wordpress
 	mkdir -p /home/theo/data/html/adminer
 	mkdir -p /home/theo/data/html/portfolio
+	mkdir -p /home/theo/data/cadvisor
 	mkdir -p /home/theo/data/mariadb
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up -d --build
 

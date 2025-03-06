@@ -93,6 +93,7 @@
     ftp_server:
       build:
         context: ./bonus/ftp
+        dockerfile: Dockerfile
         args:
           FTP_USER: ${FTP_USER}
           FTP_PASSWORD: ${FTP_PASSWORD}
@@ -110,6 +111,19 @@
         - wordpress_data:/var/www/html
       networks:
         - inception_net
+
+
+    cadvisor:
+     build:
+        context: ./bonus/cadvisor
+        dockerfile: Dockerfile
+     container_name: cadvisor
+     restart: always
+     volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+     - cadvisor_data:/data
+     networks:
+     - inception_net
 
 
   volumes:
@@ -137,6 +151,12 @@
         type: none
         device: /home/theo/data/html/portfolio
         o: bind
+    cadvisor_data:
+        driver: local
+        driver_opts:
+            type: none
+            device: /home/theo/data/cadvisor
+            o: bind
 
   networks:
     inception_net:
