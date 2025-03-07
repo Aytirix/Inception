@@ -81,8 +81,6 @@
         dockerfile: Dockerfile
       container_name: portfolio
       restart: always
-      depends_on:
-        - mariadb
       volumes:
         - portfolio_data:/var/www/html/portfolio
       networks:

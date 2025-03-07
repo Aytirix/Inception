@@ -10,10 +10,6 @@ ARG FTP_PASSWORD
 # Création du log de vsftpd
 RUN touch /var/log/vsftpd.log && chmod 640 /var/log/vsftpd.log && chown root:root /var/log/vsftpd.log
 
-# Création de l'utilisateur FTP avec un répertoire dédié
-
-RUN echo "${FTP_USER}:${FTP_PASSWORD}"
-
 # Créer un utilisateur et un répertoire pour le serveur FTP
 RUN adduser -D -s /bin/sh "${FTP_USER}" && \
 	mkdir -p /home/${FTP_USER}/ftp && \
@@ -30,7 +26,6 @@ EXPOSE 21
 EXPOSE 21000
 
 COPY tools/entrypoint.sh /entrypoint.sh
-
 RUN chmod +x /entrypoint.sh
 
 # Lancer le script d'entrée
