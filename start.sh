@@ -11,8 +11,8 @@ DISK_SIZE=20G
 # Création du répertoire
 mkdir -p "$HOME/sgoinfre/Inception"
 
-# Vérification et téléchargement de l'ISO si nécessaire
-if [ ! -f "$debian_iso_path" ]; then
+if [ ! -f "$vm_disk_path" ]; then
+if [ ! -f "$debian_iso_path"]; then
 	read -p "Voulez-vous télécharger l'ISO Debian maintenant ? (y/n) " download_choice
 	if [[ "$download_choice" =~ ^[Yy]$ ]]; then
 		echo "Téléchargement de l'ISO Debian... dans $debian_iso_path"
@@ -22,9 +22,6 @@ if [ ! -f "$debian_iso_path" ]; then
 		exit 1
 	fi
 fi
-
-# Création du disque virtuel
-if [ ! -f "$vm_disk_path" ]; then
     echo "Création du disque virtuel... dans $vm_disk_path"
     qemu-img create -f qcow2 "$vm_disk_path" "$DISK_SIZE"
 
@@ -36,7 +33,6 @@ if [ ! -f "$vm_disk_path" ]; then
         -boot d
     echo "VM lancée en arrière-plan pour l'installation."
 else
-	# Fonction pour lancer la VM après installation
 	echo "Démarrage de la VM..."
 	qemu-system-x86_64 -m ${RAM}G -smp cores=${CORES},threads=2,sockets=1 -cpu host -enable-kvm \
 		-net nic -net user -vga virtio -full-screen -daemonize \
