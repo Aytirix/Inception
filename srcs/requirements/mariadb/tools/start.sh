@@ -33,7 +33,6 @@ if [ ! -f "/var/lib/mysql/.root_password_set" ] && [ ! -d "/var/lib/mysql/${WP_D
 	echo "Arrêt de MariaDB..."
 	mysqladmin shutdown --user=root --password="${ROOT_PASSWORD}"
 	sleep 2
-
 fi
 
 echo "Démarrage final de MariaDB..."

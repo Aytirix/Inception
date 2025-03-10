@@ -3,7 +3,6 @@ FROM alpine:3.16
 # Installation des paquets nécessaires
 RUN apk update && apk add --no-cache \
     wget \
-    tar \
     bash \
     curl \
     busybox-extras \

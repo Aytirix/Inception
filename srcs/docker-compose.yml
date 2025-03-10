@@ -15,6 +15,7 @@
       restart: always
       networks:
         - inception_net
+
     mariadb:
       build:
         context: ./requirements/mariadb
@@ -36,7 +37,6 @@
       networks:
         - inception_net
       restart: always
-
 
     wordpress:
       build:
@@ -62,7 +62,6 @@
       networks:
         - inception_net
 
-
     adminer:
       build:
         context: ./bonus/adminer
@@ -82,13 +81,10 @@
         dockerfile: Dockerfile
       container_name: portfolio
       restart: always
-      depends_on:
-        - mariadb
       volumes:
         - portfolio_data:/var/www/html/portfolio
       networks:
         - inception_net
-
 
     ftp_server:
       build:
@@ -112,7 +108,6 @@
       networks:
         - inception_net
 
-
     cadvisor:
      build:
         context: ./bonus/cadvisor
@@ -124,7 +119,6 @@
      - cadvisor_data:/data
      networks:
      - inception_net
-
 
   volumes:
     wordpress_data:
