@@ -4,6 +4,9 @@ FROM alpine:3.16
 RUN apk add --no-cache \
     curl
 
+RUN mkdir -p /usr/local/bin
+WORKDIR /usr/local/bin
+
 # Télécharger et installer cAdvisor
 RUN curl -L -o /usr/local/bin/cadvisor "https://github.com/google/cadvisor/releases/download/v0.49.2/cadvisor-v0.49.2-linux-amd64" && \
     chmod +x /usr/local/bin/cadvisor

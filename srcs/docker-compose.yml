@@ -116,7 +116,7 @@
      restart: always
      volumes:
      - /var/run/docker.sock:/var/run/docker.sock
-     - cadvisor_data:/data
+     - cadvisor_data:/usr/local/bin
      networks:
      - inception_net
 

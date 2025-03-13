@@ -12,13 +12,8 @@ RUN touch /var/log/vsftpd.log && chmod 640 /var/log/vsftpd.log && chown root:roo
 
 # Créer un utilisateur et un répertoire pour le serveur FTP
 RUN adduser -D -s /bin/sh "${FTP_USER}" && \
-	mkdir -p /home/${FTP_USER}/ftp && \
-	echo "${FTP_USER}:${FTP_PASSWORD}" | chpasswd && \
-	chown ${FTP_USER}:${FTP_USER} /home/${FTP_USER}/ftp && \
-	chmod 550 /home/${FTP_USER} && \
-	chmod 750 /home/${FTP_USER}/ftp
-	
-# Copie du fichier de configuration de vsftpd
+	echo "${FTP_USER}:${FTP_PASSWORD}" | chpasswd
+
 COPY conf/vsftpd.conf /etc/vsftpd.conf
 
 # Exposition des ports FTP et passifs

@@ -1,10 +1,14 @@
 #!/bin/sh
 
-# Vérifier si le dossier existe
+# Vérifier si le dossier /var/www/html existe
 if [ -d "/var/www/html" ]; then
-    # Trouver les fichiers appartenant à root et les donner à l'utilisateur FTP
-    find /var/www/html -user root -exec chown ${FTP_USER}:${FTP_USER} {} \;
+	addgroup -S wp-data
+	adduser -S www-data -G wp-data
+	adduser $FTP_USER wp-data
+    chown -R www-data:wp-data /var/www/html
+    chmod -R 775 /var/www/html
+
+    echo "Dossier /var/www/html existant et permissions appliquées."
 fi
 
-# Démarrer vsftpd
 exec vsftpd /etc/vsftpd.conf
