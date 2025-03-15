@@ -12,7 +12,7 @@
       volumes:
         - wordpress_data:/var/www/html/wordpress
         - adminer_data:/var/www/html/adminer
-      restart: always
+      restart: on-failure
       networks:
         - inception_net
 
@@ -34,16 +34,15 @@
       volumes:
         - mariadb_data:/var/lib/mysql
         - ./requirements/mariadb/conf/my.cnf:/etc/my.cnf
+      restart: on-failure
       networks:
         - inception_net
-      restart: always
 
     wordpress:
       build:
         context: ./requirements/wordpress
         dockerfile: Dockerfile
       container_name: wordpress
-      restart: always
       depends_on:
         - mariadb
       environment:
@@ -59,6 +58,7 @@
         WP_EDITOR_PASSWORD: ${WP_EDITOR_PASSWORD}
       volumes:
         - wordpress_data:/var/www/html/wordpress
+      restart: on-failure
       networks:
         - inception_net
 
@@ -67,11 +67,11 @@
         context: ./bonus/adminer
         dockerfile: Dockerfile
       container_name: adminer
-      restart: always
       depends_on:
         - mariadb
       volumes:
         - adminer_data:/var/www/html/adminer
+      restart: on-failure
       networks:
         - inception_net
 
@@ -80,9 +80,9 @@
         context: ./bonus/portfolio
         dockerfile: Dockerfile
       container_name: portfolio
-      restart: always
       volumes:
         - portfolio_data:/var/www/html/portfolio
+      restart: on-failure
       networks:
         - inception_net
 
@@ -94,7 +94,6 @@
           FTP_USER: ${FTP_USER}
           FTP_PASSWORD: ${FTP_PASSWORD}
       container_name: ftp_server
-      restart: always
       depends_on:
         - wordpress
       environment:
@@ -105,6 +104,7 @@
         - "21000:21000"
       volumes:
         - wordpress_data:/var/www/html
+      restart: on-failure
       networks:
         - inception_net
 
@@ -113,10 +113,10 @@
         context: ./bonus/cadvisor
         dockerfile: Dockerfile
      container_name: cadvisor
-     restart: always
      volumes:
      - /var/run/docker.sock:/var/run/docker.sock
      - cadvisor_data:/usr/local/bin
+     restart: on-failure
      networks:
      - inception_net
 
